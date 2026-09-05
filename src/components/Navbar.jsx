@@ -3,17 +3,14 @@ import {
   Zap, 
   Moon, 
   Sun, 
-  Bell, 
   Settings as SettingsIcon, 
   Trophy, 
-  LayoutDashboard, 
+  Home, 
   Calendar, 
   Timer, 
-  TestTube, 
-  BookX, 
   TrendingUp,
   Flame,
-  CheckCircle2
+  MoreHorizontal
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -26,46 +23,43 @@ export function Navbar({ onOpenSettings }) {
     streak, 
     activeTab, 
     setActiveTab, 
-    setShowDailySummary,
-    todayStudyProgressPercentage
+    setShowDailySummary
   } = useApp();
 
-  const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'timetable', label: 'Timetable', icon: Calendar },
-    { id: 'timer', label: 'Study Timer', icon: Timer },
-    { id: 'mock', label: 'Saturday Mock', icon: TestTube },
-    { id: 'mistakes', label: 'Mistakes', icon: BookX },
+  const mobileNavItems = [
+    { id: 'dashboard', label: 'Home', icon: Home },
+    { id: 'timetable', label: 'Plan', icon: Calendar },
+    { id: 'timer', label: 'Focus', icon: Timer },
     { id: 'analytics', label: 'Progress', icon: TrendingUp },
-    { id: 'weekly', label: 'Weekly Plan', icon: Calendar },
+    { id: 'settings', label: 'More', icon: MoreHorizontal, isAction: true },
   ];
 
   return (
     <>
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-30 w-full backdrop-blur-md bg-slate-900/80 dark:bg-slate-950/80 border-b border-slate-800/80 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      {/* Top Header Navbar */}
+      <header className="sticky top-0 z-30 w-full backdrop-blur-lg bg-slate-950/85 border-b border-slate-800/80 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
           
           {/* Logo & Branding */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
-              <Zap className="w-6 h-6 text-white animate-pulse" />
+          <div className="flex items-center space-x-2.5 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent leading-tight">
+              <h1 className="text-base sm:text-lg font-black bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent leading-tight">
                 Kishore JEE
               </h1>
-              <p className="text-[10px] text-slate-400 tracking-wider font-semibold uppercase">Command Center OS</p>
+              <p className="text-[9px] sm:text-[10px] text-slate-400 tracking-wider font-semibold uppercase">Command Center OS</p>
             </div>
           </div>
 
-          {/* Level & XP Quick Badge */}
-          <div className="hidden sm:flex items-center space-x-4 bg-slate-800/60 dark:bg-slate-900/80 border border-slate-700/50 rounded-full px-4 py-1.5 text-xs">
+          {/* Level & XP Quick Badge (Desktop/Tablet) */}
+          <div className="hidden sm:flex items-center space-x-3 bg-slate-900/90 border border-slate-800 rounded-full px-3.5 py-1.5 text-xs">
             <div className="flex items-center space-x-1.5 text-amber-400 font-semibold">
-              <Trophy className="w-4 h-4" />
+              <Trophy className="w-3.5 h-3.5" />
               <span>Lvl {levelInfo.level}: {levelInfo.title}</span>
             </div>
-            <div className="w-20 bg-slate-700 rounded-full h-2 overflow-hidden">
+            <div className="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden">
               <div 
                 className="bg-gradient-to-r from-amber-400 to-yellow-300 h-full rounded-full transition-all duration-500" 
                 style={{ width: `${levelInfo.percentage}%` }} 
@@ -75,28 +69,28 @@ export function Navbar({ onOpenSettings }) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-2">
             
             {/* Streak Counter */}
-            <div className="flex items-center space-x-1 bg-orange-500/10 border border-orange-500/30 text-orange-400 px-3 py-1 rounded-full text-xs font-bold">
-              <Flame className="w-4 h-4 fill-orange-500 text-orange-500" />
-              <span>{streak}d Streak</span>
+            <div className="flex items-center space-x-1 bg-orange-500/10 border border-orange-500/30 text-orange-400 px-2.5 py-1 rounded-full text-xs font-bold">
+              <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
+              <span>{streak}d</span>
             </div>
 
-            {/* Daily Summary Button */}
+            {/* Daily Summary Button (Desktop) */}
             <button
               onClick={() => setShowDailySummary(true)}
-              className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 hover:text-white transition border border-slate-700/50 text-xs flex items-center space-x-1"
-              title="Good Night Daily Summary"
+              className="hidden sm:flex p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white transition border border-slate-800 text-xs items-center space-x-1.5 min-h-[38px]"
+              title="Good Night Summary"
             >
               <Moon className="w-4 h-4 text-indigo-400" />
-              <span className="hidden lg:inline text-xs font-medium">Night Summary</span>
+              <span className="text-xs font-medium">Night Summary</span>
             </button>
 
             {/* Dark / Light Theme Toggle */}
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 hover:text-white transition border border-slate-700/50"
+              className="p-2 sm:p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white transition border border-slate-800 min-h-[38px] min-w-[38px] flex items-center justify-center"
               title="Toggle Theme"
             >
               {theme === 'dark' ? (
@@ -106,10 +100,10 @@ export function Navbar({ onOpenSettings }) {
               )}
             </button>
 
-            {/* Settings Modal Button */}
+            {/* Settings Modal Button (Desktop) */}
             <button
               onClick={onOpenSettings}
-              className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 hover:text-white transition border border-slate-700/50"
+              className="hidden sm:flex p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white transition border border-slate-800 min-h-[38px] min-w-[38px] items-center justify-center"
               title="Settings"
             >
               <SettingsIcon className="w-4 h-4 text-slate-400" />
@@ -120,22 +114,30 @@ export function Navbar({ onOpenSettings }) {
         </div>
       </header>
 
-      {/* Bottom Navigation Bar for Mobile */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 dark:bg-slate-950/95 backdrop-blur-lg border-t border-slate-800/80 md:hidden">
-        <div className="grid grid-cols-6 h-16">
-          {navItems.slice(0, 6).map((item) => {
+      {/* Mobile Fixed Bottom Navigation Bar (5 Items Only) */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800/80 md:hidden pb-safe">
+        <div className="grid grid-cols-5 h-14 items-center max-w-md mx-auto">
+          {mobileNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`flex flex-col items-center justify-center space-y-1 transition ${
+                onClick={() => {
+                  if (item.isAction) {
+                    onOpenSettings();
+                  } else {
+                    setActiveTab(item.id);
+                  }
+                }}
+                className={`flex flex-col items-center justify-center space-y-0.5 py-1 transition-all min-h-[48px] ${
                   isActive ? 'text-blue-400 font-bold' : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'scale-110' : ''}`} />
-                <span className="text-[10px] truncate max-w-[55px]">{item.label}</span>
+                <div className={`p-1 rounded-xl transition ${isActive ? 'bg-blue-500/15 text-blue-400' : ''}`}>
+                  <Icon className={`w-5 h-5 ${isActive ? 'scale-110' : ''}`} />
+                </div>
+                <span className="text-[10px] tracking-tight truncate font-medium">{item.label}</span>
               </button>
             );
           })}

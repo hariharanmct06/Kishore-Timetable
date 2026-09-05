@@ -9,140 +9,104 @@ export function ProgressDashboard() {
     ? Math.round(mockTests.reduce((acc, m) => acc + m.totalScore, 0) / mockTests.length)
     : 0;
 
-  // Estimated metrics
-  const totalStudyHours = Math.round((completedSessions.length * 2) * 10) / 10; // ~2 hrs per session
-  const pyqsSolved = completedSessions.length * 20; // ~20 PYQs per completed session
+  const totalStudyHours = Math.round((completedSessions.length * 2) * 10) / 10;
+  const pyqsSolved = completedSessions.length * 20;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       
-      {/* Header Banner */}
-      <div className="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl backdrop-blur-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Mobile-First Header */}
+      <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-3xl backdrop-blur-md flex items-center justify-between">
         <div>
-          <div className="flex items-center space-x-2 text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">
+          <div className="flex items-center space-x-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
             <TrendingUp className="w-4 h-4" />
-            <span>Kishore's JEE Master Stats</span>
+            <span>PROGRESS TRACKER</span>
           </div>
-          <h2 className="text-2xl font-extrabold text-white">Overall Preparation Analytics</h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Track your study consistency, total study hours, rank leveling, and PYQ targets.
-          </p>
+          <h2 className="text-xl sm:text-2xl font-black text-white mt-0.5">Overall Performance</h2>
         </div>
 
-        <div className="flex items-center space-x-2 bg-amber-500/10 border border-amber-500/30 px-4 py-2 rounded-2xl text-amber-400 font-bold text-xs">
-          <Trophy className="w-4 h-4" />
-          <span>Level {levelInfo.level}: {levelInfo.title}</span>
+        <div className="flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-full text-amber-400 font-bold text-xs">
+          <Trophy className="w-3.5 h-3.5" />
+          <span>Lvl {levelInfo.level}</span>
         </div>
       </div>
 
-      {/* Primary Level & XP Hero Card */}
-      <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-900 border border-indigo-500/40 p-6 rounded-3xl shadow-2xl relative overflow-hidden space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Level Progress Banner */}
+      <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-900 border border-indigo-500/40 p-5 rounded-3xl space-y-3">
+        <div className="flex items-center justify-between">
           <div>
-            <div className="text-xs text-indigo-300 font-bold uppercase tracking-wider">Current Gamification Level</div>
-            <h3 className="text-2xl sm:text-3xl font-black text-white mt-1">Level {levelInfo.level} — {levelInfo.title}</h3>
+            <div className="text-[10px] text-indigo-300 font-bold uppercase tracking-wider">Level Rank</div>
+            <h3 className="text-lg font-black text-white">{levelInfo.title}</h3>
           </div>
-          <div className="text-right">
-            <span className="text-2xl font-mono font-black text-amber-400">{xp} XP</span>
-            <div className="text-xs text-slate-400">Total Experience Points</div>
-          </div>
+          <span className="text-xl font-mono font-black text-amber-400">{xp} XP</span>
         </div>
 
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-xs text-slate-400">
-            <span>Level Progress ({levelInfo.percentage}%)</span>
-            <span>Next Level at {levelInfo.nextLevelXP} XP</span>
-          </div>
-          <div className="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700/60 p-0.5">
+        <div className="space-y-1">
+          <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-slate-700/60 p-0.5">
             <div 
               className="bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 h-full rounded-full transition-all duration-700" 
               style={{ width: `${levelInfo.percentage}%` }} 
             />
           </div>
+          <div className="text-[10px] text-slate-400 text-right font-mono">{levelInfo.percentage}% to Level {levelInfo.level + 1}</div>
         </div>
       </div>
 
-      {/* Grid of Statistics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Spacious Clean 2-Column Grid */}
+      <div className="grid grid-cols-2 gap-3">
         
-        {/* Study Streak */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-orange-400 text-xs font-bold uppercase">
+        {/* Streak */}
+        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-1">
+          <div className="flex items-center space-x-1.5 text-orange-400 text-xs font-bold uppercase">
             <Flame className="w-4 h-4 fill-orange-500" />
-            <span>Study Streak</span>
+            <span>Streak</span>
           </div>
-          <div className="text-2xl font-extrabold text-white">{streak} Days 🔥</div>
-          <p className="text-[10px] text-slate-400">Consecutive daily study targets met</p>
+          <div className="text-xl font-black text-white">{streak} Days 🔥</div>
         </div>
 
-        {/* Total Study Hours */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-blue-400 text-xs font-bold uppercase">
+        {/* Study Hours */}
+        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-1">
+          <div className="flex items-center space-x-1.5 text-blue-400 text-xs font-bold uppercase">
             <Clock className="w-4 h-4" />
-            <span>Total Study Hours</span>
+            <span>Study Time</span>
           </div>
-          <div className="text-2xl font-extrabold text-white">{totalStudyHours} Hours ⏱️</div>
-          <p className="text-[10px] text-slate-400">Logged across study sessions</p>
-        </div>
-
-        {/* Sessions Completed */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase">
-            <CheckCircle2 className="w-4 h-4" />
-            <span>Sessions Completed</span>
-          </div>
-          <div className="text-2xl font-extrabold text-white">{completedSessions.length} Sessions ✅</div>
-          <p className="text-[10px] text-slate-400">Deep study slots finished</p>
+          <div className="text-xl font-black text-white">{totalStudyHours}h ⏱️</div>
         </div>
 
         {/* PYQs Solved */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase">
+        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-1">
+          <div className="flex items-center space-x-1.5 text-indigo-400 text-xs font-bold uppercase">
             <BookOpen className="w-4 h-4" />
             <span>PYQs Solved</span>
           </div>
-          <div className="text-2xl font-extrabold text-white">~{pyqsSolved} PYQs 📝</div>
-          <p className="text-[10px] text-slate-400">Estimated questions solved</p>
+          <div className="text-xl font-black text-white">~{pyqsSolved} 📝</div>
         </div>
 
-        {/* Mock Tests Completed */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-purple-400 text-xs font-bold uppercase">
+        {/* Mock Tests */}
+        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-1">
+          <div className="flex items-center space-x-1.5 text-purple-400 text-xs font-bold uppercase">
             <TestTube className="w-4 h-4" />
-            <span>Mock Tests Completed</span>
+            <span>Mock Tests</span>
           </div>
-          <div className="text-2xl font-extrabold text-white">{mockTests.length} Tests 🧪</div>
-          <p className="text-[10px] text-slate-400">3-Hour full mock simulations</p>
+          <div className="text-xl font-black text-white">{mockTests.length} Mocks 🧪</div>
         </div>
 
-        {/* Average Mock Score */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-cyan-400 text-xs font-bold uppercase">
+        {/* Average Score */}
+        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-1">
+          <div className="flex items-center space-x-1.5 text-cyan-400 text-xs font-bold uppercase">
             <Target className="w-4 h-4" />
-            <span>Average Mock Score</span>
+            <span>Avg Mock Score</span>
           </div>
-          <div className="text-2xl font-extrabold text-white">{mockAvg} / 300 🎯</div>
-          <p className="text-[10px] text-slate-400">Across all Saturday mock tests</p>
+          <div className="text-xl font-black text-white">{mockAvg} / 300 🎯</div>
         </div>
 
-        {/* Mistake Notebook Count */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-red-400 text-xs font-bold uppercase">
+        {/* Mistakes Documented */}
+        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-1">
+          <div className="flex items-center space-x-1.5 text-red-400 text-xs font-bold uppercase">
             <Zap className="w-4 h-4" />
-            <span>Mistakes Documented</span>
+            <span>Mistakes</span>
           </div>
-          <div className="text-2xl font-extrabold text-white">{mistakes.length} Logged ❌</div>
-          <p className="text-[10px] text-slate-400">Mistakes tagged & analyzed</p>
-        </div>
-
-        {/* Target JEE Score */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase">
-            <Award className="w-4 h-4" />
-            <span>Target JEE Score</span>
-          </div>
-          <div className="text-2xl font-extrabold text-white">240+ / 300 🏆</div>
-          <p className="text-[10px] text-slate-400">Goal for JEE Main 2026</p>
+          <div className="text-xl font-black text-white">{mistakes.length} Logged ❌</div>
         </div>
 
       </div>

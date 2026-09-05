@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CalendarDays, BookOpen, Target, CheckCircle2, ChevronRight } from 'lucide-react';
+import { CalendarDays, BookOpen, Clock } from 'lucide-react';
 import { WEEKLY_SUBJECT_ROTATION, DAILY_TIMETABLE_SLOTS } from '../../data/schedule';
 import { formatTime24To12 } from '../../utils/timeUtils';
 
@@ -10,76 +10,61 @@ export function WeeklyCalendar() {
   const selectedDayInfo = WEEKLY_SUBJECT_ROTATION[selectedDayIndex];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       
-      {/* Header Banner */}
-      <div className="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl backdrop-blur-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center space-x-2 text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">
-            <CalendarDays className="w-4 h-4" />
-            <span>Weekly Master Plan</span>
-          </div>
-          <h2 className="text-2xl font-extrabold text-white">7-Day Timetable & Rotation</h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Click any day of the week to inspect its subject priorities and routine schedule.
-          </p>
+      {/* Mobile-First Header */}
+      <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-3xl backdrop-blur-md">
+        <div className="flex items-center space-x-2 text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">
+          <CalendarDays className="w-4 h-4" />
+          <span>WEEKLY MASTER PLAN</span>
         </div>
+        <h2 className="text-xl sm:text-2xl font-black text-white">Subject Rotation & Strategy</h2>
       </div>
 
-      {/* Days Tabs Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+      {/* Horizontal Scrollable Day Selector (MON | TUE | WED | THU | FRI | SAT | SUN) */}
+      <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
         {daysOrder.map((dayIdx) => {
           const info = WEEKLY_SUBJECT_ROTATION[dayIdx];
           const isSelected = selectedDayIndex === dayIdx;
           const isToday = new Date().getDay() === dayIdx;
 
+          const shortLabel = info.dayName.substring(0, 3).toUpperCase();
+
           return (
             <button
               key={dayIdx}
               onClick={() => setSelectedDayIndex(dayIdx)}
-              className={`p-4 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between space-y-3 ${
+              className={`px-4 py-3 rounded-2xl font-extrabold text-xs transition-all shrink-0 min-h-[44px] flex flex-col items-center justify-center min-w-[58px] ${
                 isSelected
-                  ? 'bg-gradient-to-br from-indigo-900 to-blue-900 border-indigo-500/80 text-white shadow-xl shadow-indigo-500/20 scale-[1.02]'
-                  : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25 scale-[1.03]'
+                  : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
               }`}
             >
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-bold">{info.dayName}</span>
-                {isToday && (
-                  <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-full bg-blue-500 text-white">
-                    TODAY
-                  </span>
-                )}
-              </div>
-
-              <div>
-                <div className="text-xs font-semibold text-indigo-300 truncate">{info.primarySubject}</div>
-                <div className="text-[10px] text-slate-400 truncate mt-0.5">{info.focus}</div>
-              </div>
+              <span>{shortLabel}</span>
+              {isToday && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-0.5" />
+              )}
             </button>
           );
         })}
       </div>
 
       {/* Selected Day Timetable Drawer */}
-      <div className="bg-slate-900/70 border border-slate-800 p-6 rounded-3xl space-y-4">
-        
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+      <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-3xl space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
           <div>
-            <h3 className="text-xl font-bold text-white">{selectedDayInfo.dayName} Timetable Blueprint</h3>
-            <p className="text-xs text-indigo-300 font-medium mt-0.5">
-              Subjects: {selectedDayInfo.subjects.join(' → ')}
-            </p>
+            <h3 className="text-lg font-extrabold text-white">{selectedDayInfo.dayName} Blueprint</h3>
+            <p className="text-xs text-indigo-300 font-semibold">{selectedDayInfo.focus}</p>
           </div>
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-            {selectedDayInfo.focus}
+          <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            {selectedDayInfo.primarySubject}
           </span>
         </div>
 
         <p className="text-xs text-slate-400 italic">"{selectedDayInfo.customNotes}"</p>
 
-        {/* Schedule List preview */}
-        <div className="space-y-2 pt-2">
+        {/* Schedule List */}
+        <div className="space-y-2">
           {DAILY_TIMETABLE_SLOTS.map((slot) => {
             let slotSubject = "";
             if (slot.type === 'study') {
@@ -94,14 +79,14 @@ export function WeeklyCalendar() {
 
             return (
               <div key={slot.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 text-xs">
-                <div className="flex items-center space-x-3">
-                  <span className="font-mono text-slate-400 font-bold min-w-[110px]">
-                    {formatTime24To12(slot.startTime)} - {formatTime24To12(slot.endTime)}
+                <div className="flex items-center space-x-2.5 truncate">
+                  <span className="font-mono text-slate-400 font-bold shrink-0">
+                    {formatTime24To12(slot.startTime)}
                   </span>
-                  <span className="font-bold text-slate-200">{slot.title}</span>
+                  <span className="font-bold text-slate-200 truncate">{slot.title}</span>
                 </div>
                 {slotSubject && (
-                  <span className="font-semibold text-indigo-300 px-2 py-0.5 rounded-md bg-indigo-500/10">
+                  <span className="font-semibold text-indigo-300 px-2 py-0.5 rounded bg-indigo-500/10 shrink-0 text-[10px]">
                     {slotSubject}
                   </span>
                 )}

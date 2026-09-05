@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Calendar, CheckCircle2, ListTodo, Flame, Sparkles } from 'lucide-react';
+import { Clock, Calendar, CheckCircle2, ListTodo, Sparkles } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { getGreeting, formatDateHeader } from '../../utils/timeUtils';
 
 export function HeaderStats() {
-  const { todayStudyProgressPercentage, completedTasksCount, totalTasksCount, streak, todaySubjectRotation } = useApp();
+  const { todayStudyProgressPercentage, completedTasksCount, totalTasksCount, todaySubjectRotation } = useApp();
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -15,19 +15,30 @@ export function HeaderStats() {
   }, []);
 
   const greeting = getGreeting(time);
-  const timeString = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const timeString = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   const remainingTasks = Math.max(0, totalTasksCount - completedTasksCount);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       
-      {/* Main Greeting Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-indigo-950/60 border border-slate-800/80 p-6 rounded-3xl shadow-xl backdrop-blur-md relative overflow-hidden">
+      {/* Mobile Top Header (Clean, Spacious, Minimal) */}
+      <div className="md:hidden space-y-1 py-1">
+        <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+          {greeting}
+        </h1>
+        <div className="flex items-center justify-between text-xs text-slate-400">
+          <p className="font-medium text-indigo-300">JEE Main Preparation</p>
+          <span className="font-mono text-slate-400">{formatDateHeader(time).split(',')[0]}, {timeString}</span>
+        </div>
+      </div>
+
+      {/* Desktop Main Greeting Header */}
+      <div className="hidden md:flex flex-row items-center justify-between gap-4 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-indigo-950/60 border border-slate-800/80 p-6 rounded-3xl shadow-xl backdrop-blur-md relative overflow-hidden">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
         
         <div>
           <div className="flex items-center space-x-2 text-blue-400 font-semibold text-sm mb-1">
-            <Sparkles className="w-4 h-4 text-blue-400 animate-spin" style={{ animationDuration: '6s' }} />
+            <Sparkles className="w-4 h-4 text-blue-400" />
             <span>JEE Main Preparation Command Center</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -38,8 +49,8 @@ export function HeaderStats() {
           </p>
         </div>
 
-        {/* Live Clock Card */}
-        <div className="flex items-center space-x-3 bg-slate-800/80 border border-slate-700/60 px-5 py-3 rounded-2xl shadow-inner backdrop-blur-md self-start md:self-auto">
+        {/* Desktop Live Clock Card */}
+        <div className="flex items-center space-x-3 bg-slate-800/80 border border-slate-700/60 px-5 py-3 rounded-2xl shadow-inner backdrop-blur-md">
           <div className="p-2.5 rounded-xl bg-blue-500/20 text-blue-400">
             <Clock className="w-5 h-5 animate-pulse" />
           </div>
@@ -52,8 +63,8 @@ export function HeaderStats() {
         </div>
       </div>
 
-      {/* Stats Cards Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stats Cards Row (Desktop Only) */}
+      <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Date & Day */}
         <div className="bg-slate-900/60 border border-slate-800/80 p-4 rounded-2xl flex items-center space-x-3 backdrop-blur-sm">

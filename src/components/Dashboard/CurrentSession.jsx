@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, CheckCircle2, Maximize2, BookOpen, Coffee, Sun, Moon, Activity, ArrowRight, Clock, Target, Edit3 } from 'lucide-react';
+import { Play, Pause, CheckCircle2, Maximize2, Clock, Zap, ArrowRight } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { DAILY_TIMETABLE_SLOTS } from '../../data/schedule';
 import { findActiveAndNextSlot, formatSecondsToHHMMSS, formatTime24To12 } from '../../utils/timeUtils';
@@ -10,17 +10,13 @@ export function CurrentSession() {
     completedSessions, 
     markSessionComplete, 
     todayTopics, 
-    setTodayTopics, 
     todaySubjectRotation, 
     setFocusMode, 
     setActiveFocusSlot 
   } = useApp();
 
   const [activeInfo, setActiveInfo] = useState(() => findActiveAndNextSlot(DAILY_TIMETABLE_SLOTS));
-  const [editingTopic, setEditingTopic] = useState(false);
-  const [topicInput, setTopicInput] = useState('');
 
-  // Update active slot every 10 seconds to follow wall-clock time dynamically
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveInfo(findActiveAndNextSlot(DAILY_TIMETABLE_SLOTS));
@@ -38,7 +34,6 @@ export function CurrentSession() {
     }
   );
 
-  // Sync remaining seconds when activeSlot changes
   useEffect(() => {
     if (activeSlot) {
       setDuration(remainingSecondsInActive);
@@ -49,7 +44,7 @@ export function CurrentSession() {
 
   const isCompleted = completedSessions.includes(activeSlot.id);
 
-  // Determine current subject based on session & weekly rotation
+  // Subject mapping
   let subjectName = "General Study";
   if (activeSlot.type === 'study') {
     if (activeSlot.sessionIndex === 1) subjectName = todaySubjectRotation?.subjects[0] || "Physics";
@@ -69,13 +64,6 @@ export function CurrentSession() {
 
   const currentTopic = todayTopics[subjectName] || activeSlot.description || "General Practice";
 
-  const handleSaveTopic = () => {
-    if (topicInput.trim()) {
-      setTodayTopics((prev) => ({ ...prev, [subjectName]: topicInput.trim() }));
-    }
-    setEditingTopic(false);
-  };
-
   const handleOpenFocusMode = () => {
     setActiveFocusSlot({
       ...activeSlot,
@@ -87,166 +75,106 @@ export function CurrentSession() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       
-      {/* Hero Now Studying Card */}
-      <div className={`p-6 rounded-3xl border transition-all duration-300 shadow-2xl relative overflow-hidden ${
+      {/* Hero Card (Mobile-First spacious layout) */}
+      <div className={`p-5 sm:p-6 rounded-3xl border transition-all duration-300 shadow-xl relative overflow-hidden ${
         isCompleted
-          ? 'bg-emerald-950/40 border-emerald-500/40 shadow-emerald-950/20'
+          ? 'bg-emerald-950/40 border-emerald-500/40'
           : activeSlot.type === 'study'
-          ? 'bg-gradient-to-br from-slate-900 via-indigo-950/80 to-slate-900 border-indigo-500/50 shadow-indigo-950/40'
-          : activeSlot.type === 'break'
-          ? 'bg-gradient-to-br from-slate-900 via-amber-950/40 to-slate-900 border-amber-500/40'
-          : 'bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border-slate-700/60'
+          ? 'bg-gradient-to-br from-slate-900 via-indigo-950/90 to-slate-900 border-indigo-500/50 shadow-indigo-950/30'
+          : 'bg-gradient-to-br from-slate-900 via-amber-950/30 to-slate-900 border-amber-500/40'
       }`}>
         
-        {/* Decorative background glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+        {/* Mobile View (Spacious, Minimal, Large Touch Targets) */}
+        <div className="flex flex-col space-y-4">
           
-          {/* Main Info Header */}
-          <div className="space-y-3 flex-1">
-            
-            {/* Status Pill */}
-            <div className="flex items-center space-x-3">
-              <span className={`px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center space-x-1.5 ${
-                isCompleted
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                  : activeSlot.type === 'study'
-                  ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40 animate-pulse'
-                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-              }`}>
-                <span className="w-2 h-2 rounded-full bg-current animate-ping" />
-                <span>{isCompleted ? "✅ COMPLETED" : "NOW STUDYING"}</span>
-              </span>
+          {/* Header Badge */}
+          <div className="flex items-center justify-between">
+            <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center space-x-1.5 ${
+              isCompleted
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+            }`}>
+              <Zap className="w-3.5 h-3.5 fill-blue-400 text-blue-400" />
+              <span>{isCompleted ? "✓ COMPLETED" : "⚡ NOW"}</span>
+            </span>
 
-              <span className="text-xs font-mono text-slate-400">
-                {formatTime24To12(activeSlot.startTime)} – {formatTime24To12(activeSlot.endTime)}
-              </span>
-            </div>
-
-            {/* Subject Title */}
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center space-x-3">
-                <span>{subjectName}</span>
-                <span className="text-sm font-semibold text-indigo-300 px-3 py-1 bg-slate-800/80 rounded-xl border border-slate-700/50">
-                  {activeSlot.title}
-                </span>
-              </h2>
-            </div>
-
-            {/* Topic Specification */}
-            <div className="flex items-center space-x-2 text-slate-300 text-sm">
-              <Target className="w-4 h-4 text-indigo-400 shrink-0" />
-              {editingTopic ? (
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="text"
-                    value={topicInput}
-                    onChange={(e) => setTopicInput(e.target.value)}
-                    placeholder="Enter today's topic..."
-                    className="bg-slate-800 border border-indigo-500 text-white text-xs px-3 py-1 rounded-lg focus:outline-none"
-                    autoFocus
-                  />
-                  <button onClick={handleSaveTopic} className="text-xs text-emerald-400 font-bold hover:underline">Save</button>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <span className="font-medium text-slate-200">Topic: <span className="text-indigo-200">{currentTopic}</span></span>
-                  <button 
-                    onClick={() => { setTopicInput(currentTopic); setEditingTopic(true); }}
-                    className="text-slate-400 hover:text-white p-1 rounded transition"
-                    title="Edit topic"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              )}
-            </div>
-
+            <span className="text-xs font-mono text-slate-400">
+              {formatTime24To12(activeSlot.startTime)} - {formatTime24To12(activeSlot.endTime)}
+            </span>
           </div>
 
-          {/* Timer Display & Controls */}
-          <div className="flex flex-col items-center lg:items-end space-y-4">
-            
-            {/* Real-time countdown timer display */}
-            <div className="bg-slate-950/80 border border-slate-800/90 px-6 py-3 rounded-2xl shadow-inner text-center">
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Time Remaining</div>
-              <div className="font-mono text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
-                ⏱️ {formatSecondsToHHMMSS(timeLeft)}
-              </div>
+          {/* Subject & Subtitle */}
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">{subjectName}</h2>
+            <p className="text-xs font-semibold text-indigo-300 mt-0.5">{activeSlot.title}</p>
+          </div>
+
+          {/* Large Countdown Timer */}
+          <div className="py-2 text-center bg-slate-950/60 rounded-2xl border border-slate-800/80">
+            <div className="font-mono text-4xl sm:text-5xl font-black bg-gradient-to-r from-blue-400 via-indigo-200 to-cyan-300 bg-clip-text text-transparent tracking-tight">
+              {formatSecondsToHHMMSS(timeLeft)}
             </div>
+          </div>
 
-            {/* Button Controls */}
-            <div className="flex flex-wrap items-center gap-2">
-              
-              {!isRunning ? (
-                <button
-                  onClick={startTimer}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-blue-500/25 transition flex items-center space-x-2"
-                >
-                  <Play className="w-4 h-4 fill-white" />
-                  <span>START</span>
-                </button>
-              ) : (
-                <button
-                  onClick={pauseTimer}
-                  className="px-4 py-2 rounded-xl bg-amber-600/80 hover:bg-amber-600 text-white font-bold text-sm shadow-lg transition flex items-center space-x-2"
-                >
-                  <Pause className="w-4 h-4 fill-white" />
-                  <span>PAUSE</span>
-                </button>
-              )}
-
+          {/* Touch-friendly Primary Action Buttons */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+            {!isRunning ? (
               <button
-                onClick={() => markSessionComplete(activeSlot.id)}
-                disabled={isCompleted}
-                className={`px-4 py-2 rounded-xl font-bold text-sm transition flex items-center space-x-2 ${
-                  isCompleted
-                    ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-500/30 cursor-default'
-                    : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20'
-                }`}
+                onClick={startTimer}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-sm shadow-lg shadow-blue-500/25 transition flex items-center justify-center space-x-2 min-h-[48px]"
               >
-                <CheckCircle2 className="w-4 h-4" />
-                <span>{isCompleted ? "COMPLETED" : "COMPLETE"}</span>
+                <Play className="w-4 h-4 fill-white" />
+                <span>START SESSION</span>
               </button>
-
+            ) : (
               <button
-                onClick={handleOpenFocusMode}
-                className="px-3.5 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-indigo-300 hover:text-white font-semibold text-sm border border-slate-700/60 transition flex items-center space-x-1.5"
-                title="Fullscreen Focus Mode"
+                onClick={pauseTimer}
+                className="w-full py-3.5 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-sm shadow-lg transition flex items-center justify-center space-x-2 min-h-[48px]"
               >
-                <Maximize2 className="w-4 h-4" />
-                <span className="hidden sm:inline">FOCUS MODE</span>
+                <Pause className="w-4 h-4 fill-white" />
+                <span>PAUSE</span>
               </button>
+            )}
 
-            </div>
+            <button
+              onClick={() => markSessionComplete(activeSlot.id)}
+              disabled={isCompleted}
+              className={`w-full py-3.5 rounded-2xl font-bold text-sm transition flex items-center justify-center space-x-2 min-h-[48px] ${
+                isCompleted
+                  ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg'
+              }`}
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>{isCompleted ? "COMPLETED" : "COMPLETE"}</span>
+            </button>
 
+            <button
+              onClick={handleOpenFocusMode}
+              className="w-full sm:w-auto py-3 rounded-2xl bg-slate-800/80 hover:bg-slate-700 text-indigo-300 font-semibold text-xs border border-slate-700/60 transition flex items-center justify-center space-x-1.5 min-h-[44px]"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span>FOCUS MODE</span>
+            </button>
           </div>
 
         </div>
 
       </div>
 
-      {/* Next Session Card */}
+      {/* Clean Next Session Preview Bar */}
       {nextSlot && (
-        <div className="bg-slate-900/60 border border-slate-800/80 p-4 rounded-2xl flex items-center justify-between backdrop-blur-sm">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-slate-800 text-indigo-400 border border-slate-700/60">
-              <Clock className="w-4 h-4" />
-            </div>
-            <div>
-              <div className="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Next Session</div>
-              <div className="text-sm font-bold text-slate-200">
-                {nextSlot.title} <span className="text-xs text-slate-400 font-normal">({formatTime24To12(nextSlot.startTime)})</span>
-              </div>
-            </div>
+        <div className="bg-slate-900/70 border border-slate-800 px-4 py-3 rounded-2xl flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <span className="text-[10px] font-black uppercase text-indigo-400 tracking-wider">NEXT</span>
+            <span className="text-slate-500 text-xs">•</span>
+            <span className="text-xs font-bold text-slate-200">{nextSlot.title}</span>
           </div>
-          <div className="flex items-center text-xs font-semibold text-indigo-400">
-            <span>{nextSlot.category}</span>
-            <ArrowRight className="w-4 h-4 ml-1" />
-          </div>
+          <span className="text-xs font-mono font-semibold text-slate-400">
+            {formatTime24To12(nextSlot.startTime)}
+          </span>
         </div>
       )}
 
