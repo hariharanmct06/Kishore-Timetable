@@ -20,9 +20,8 @@ export function useNotifications() {
         new Notification(title, {
           body,
           icon: "/favicon.ico",
-          badge: "/favicon.ico",
+          tag: "kishore-jee-command-center",
           renotify: true,
-          tag: "jee-command-center",
           ...options
         });
       } catch (e) {

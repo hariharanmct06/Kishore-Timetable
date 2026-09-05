@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
-import { Sidebar } from './components/Sidebar';
-import { HeaderStats } from './components/Dashboard/HeaderStats';
-import { CurrentSession } from './components/Dashboard/CurrentSession';
-import { QuoteCard } from './components/Dashboard/QuoteCard';
-import { WellnessCard } from './components/Dashboard/WellnessCard';
-import { TimetableList } from './components/Timetable/TimetableList';
-import { StudyTimer } from './components/Timer/StudyTimer';
-import { FocusMode } from './components/Timer/FocusMode';
-import { TaskTracker } from './components/Tasks/TaskTracker';
-import { SaturdayMockTest } from './components/MockTest/SaturdayMockTest';
-import { MistakeNotebook } from './components/MistakeNotebook/MistakeNotebook';
-import { ProgressDashboard } from './components/Analytics/ProgressDashboard';
-import { WeeklyCalendar } from './components/Weekly/WeeklyCalendar';
+import { CurrentActivityCard } from './components/Home/CurrentActivityCard';
+import { ProgressSummaryCard } from './components/Home/ProgressSummaryCard';
+import { QuickChecklistCard } from './components/Home/QuickChecklistCard';
+import { VerticalTimeline } from './components/Plan/VerticalTimeline';
+import { WeeklyDaySelector } from './components/Plan/WeeklyDaySelector';
+import { FocusModeOverlay } from './components/Focus/FocusModeOverlay';
+import { StudyTimerView } from './components/Focus/StudyTimerView';
+import { SaturdayMockView } from './components/MockTest/SaturdayMockView';
+import { MistakeNotebookView } from './components/Mistakes/MistakeNotebookView';
+import { ProgressStatsView } from './components/Progress/ProgressStatsView';
 import { DailySummaryModal } from './components/Summary/DailySummaryModal';
-import { SettingsModal } from './components/Settings/SettingsModal';
+import { SettingsModalView } from './components/Settings/SettingsModalView';
 
 function MainContent() {
   const { activeTab, focusMode } = useApp();
@@ -23,81 +20,56 @@ function MainContent() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white pb-20 md:pb-12">
-      
-      {/* Navigation Header */}
       <Navbar onOpenSettings={() => setIsSettingsOpen(true)} />
 
-      {/* Main Layout Container */}
       <div className="flex">
-        
-        {/* Desktop Sidebar Navigation */}
-        <Sidebar onOpenSettings={() => setIsSettingsOpen(true)} />
-
-        {/* Page Content Body */}
         <main className="flex-1 md:ml-64 p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto space-y-6">
           
-          {activeTab === 'dashboard' && (
+          {activeTab === 'home' && (
             <div className="space-y-6 animate-fadeIn">
-              <HeaderStats />
-              <CurrentSession />
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <QuoteCard />
-                <WellnessCard />
-              </div>
-
-              <TaskTracker />
+              <CurrentActivityCard />
+              <ProgressSummaryCard />
+              <QuickChecklistCard />
             </div>
           )}
 
-          {activeTab === 'timetable' && (
-            <div className="animate-fadeIn">
-              <TimetableList />
+          {activeTab === 'plan' && (
+            <div className="space-y-6 animate-fadeIn">
+              <WeeklyDaySelector />
+              <VerticalTimeline />
             </div>
           )}
 
-          {activeTab === 'timer' && (
+          {activeTab === 'focus' && (
             <div className="animate-fadeIn">
-              <StudyTimer />
+              <StudyTimerView />
             </div>
           )}
 
           {activeTab === 'mock' && (
             <div className="animate-fadeIn">
-              <SaturdayMockTest />
+              <SaturdayMockView />
             </div>
           )}
 
           {activeTab === 'mistakes' && (
             <div className="animate-fadeIn">
-              <MistakeNotebook />
+              <MistakeNotebookView />
             </div>
           )}
 
-          {activeTab === 'analytics' && (
+          {activeTab === 'progress' && (
             <div className="animate-fadeIn">
-              <ProgressDashboard />
-            </div>
-          )}
-
-          {activeTab === 'weekly' && (
-            <div className="animate-fadeIn">
-              <WeeklyCalendar />
+              <ProgressStatsView />
             </div>
           )}
 
         </main>
       </div>
 
-      {/* Fullscreen Distraction-Free Focus Overlay */}
-      {focusMode && <FocusMode />}
-
-      {/* End-of-Day Summary Modal */}
+      {focusMode && <FocusModeOverlay />}
       <DailySummaryModal />
-
-      {/* Settings Modal */}
-      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-
+      <SettingsModalView isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </div>
   );
 }
